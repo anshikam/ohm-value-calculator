@@ -1,5 +1,7 @@
 class ColorCodeCalculator
 
+  attr_reader :resistance, :tolerance, :minimum, :maximum
+
   FIRST_DIGIT = {"Brown"=>1, "Red"=>2, "Orange"=>3, "Yellow"=>4, "Green"=>5, "Blue"=>6, "Violet"=>7, "Gray"=>8, "White"=>9}.with_indifferent_access
 
   SECOND_DIGIT = {"Black"=>0, "Brown"=>1, "Red"=>2, "Orange"=>3, "Yellow"=>4, "Green"=>5, "Blue"=>6, "Violet"=>7, "Gray"=>8,
@@ -18,8 +20,13 @@ class ColorCodeCalculator
   end
 
   def calculate
-    @resistance = (FIRST_DIGIT[@band_a]*10 + SECOND_DIGIT[@band_b])*MULTIPLIER[@band_c]
-    @tolerance = TOLERANCE[@band_d]
+    first_digit_value = (@band_a.nil? || FIRST_DIGIT[@band_a].nil?) ? FIRST_DIGIT.first[1] : FIRST_DIGIT[@band_a]
+    second_digit_value = (@band_b.nil? || SECOND_DIGIT[@band_b].nil?) ? SECOND_DIGIT.first[1] : SECOND_DIGIT[@band_b]
+    multiplier = (@band_c.nil? || MULTIPLIER[@band_c].nil?) ? MULTIPLIER.first[1] : MULTIPLIER[@band_c]
+    tolerance = (@band_d.nil? || TOLERANCE[@band_d].nil?) ? TOLERANCE.first[1] : TOLERANCE[@band_d]
+
+    @resistance = (first_digit_value*10 + second_digit_value)*multiplier
+    @tolerance = tolerance
     @minimum = @resistance * (100.0000-@tolerance)/100.0000
     @maximum = @resistance * (100.0000+@tolerance)/100.0000
   end
